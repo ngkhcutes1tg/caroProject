@@ -1,0 +1,32 @@
+# Ignore compiled object files, binaries, and libraries
+*.o
+*.obj
+*.so
+*.exe
+*.dll
+*.lib
+*.a
+
+# Ignore precompiled headers
+*.gch
+*.pch
+
+# Ignore temporary files created by editors
+*~
+*.swp
+*.swo
+
+# Ignore build directories
+build/
+Debug/
+Release/
+
+# Ignore generated files
+*.out
+*.log
+
+# Ignore core dumps
+core
+
+# Ignore dependency files
+*.d
