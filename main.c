@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <conio.h>
 
-int currX, currY, turn;
+int currX, currY, turn, dem = 0;
 
 int main() {
     start();
@@ -45,13 +45,15 @@ int main() {
         else if(command == 13 && checkLegalEnter(turn)) {
             printChessChar(turn);
             if(checkWin(turn)) {
-                winPlayer(turn);
-                if(end()) 
-                    start();
-                else {
-                    out();
-                    return 0; 
-                }
+                winPlayer(checkWin(turn));
+                // if(end()) 
+                //     start();
+                // else {
+                //     out();
+                //     return 0; 
+                // }
+                setColor();
+                return 0;
             }
             else turn = -turn;
         }

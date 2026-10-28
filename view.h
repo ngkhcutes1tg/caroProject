@@ -1,7 +1,5 @@
 #pragma once
 
-#define boardSize 12
-
 typedef struct{int X, Y, mark;} point;
 
 void goToXY(int, int);

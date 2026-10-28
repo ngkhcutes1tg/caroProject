@@ -1,7 +1,7 @@
 #include "windows.h"
 #include <stdio.h>
 #include "view.h"
-#define boardSize 12
+#define boardSize 3 
 #define left 3
 #define top 1
 
@@ -71,17 +71,18 @@ void printChessChar(int turn) {
 }
 
 void winPlayer(int check) {
-	if(check != 0) {
 	goToXY(0, chessBoard[boardSize - 1][boardSize - 1].Y + 2);
 		switch(check) {
 			case 1: 
-				printf("Nguoi choi X thang");
+				printf("Nguoi choi X thang\n");
 				break;
 			case -1: 
-				printf("Nguoi choi O thang");
+				printf("Nguoi choi O thang\n");
 				break;
+			default:
+				setColor();
+				printf("2 nguoi choi hoa nhau\n");
 		}
-	}
 }
 
 void endMenu(int retryTextColor, int retryBgColor, int exitTextColor, int exitBgColor) {

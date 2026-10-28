@@ -5,7 +5,7 @@
 #include "model.h"
 #include <conio.h>
 #include <windows.h>
-#define boardSize 12
+#define boardSize 3 
 #define top 1
 #define left 3
 
