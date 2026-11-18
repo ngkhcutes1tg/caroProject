@@ -1,6 +1,10 @@
 #pragma once
+#define boardSize 12
+#define left 3
+#define top 1
 
 typedef struct{int X, Y, mark;} point;
+extern point chessBoard[boardSize][boardSize];
 
 void goToXY(int, int);
 void setColor(int = 7, int = 0);
@@ -9,6 +13,5 @@ void fixConsole();
 void resizeConsole(int, int);
 void printChessChar(int);
 void winPlayer(int);
-void endMenu(int = 3, int = 6, int = 0, int = 15);
-void endMenuBorder(int);
-void currPosHighlight(int, int);
+void endMenu(int = 1);
+void menu(int = 1);

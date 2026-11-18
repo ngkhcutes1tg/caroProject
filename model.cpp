@@ -1,15 +1,7 @@
 #include "model.h"
 #include "view.h"
-#define boardSize 3 
-#define left 3
-#define top 1
 
-extern point chessBoard[boardSize][boardSize];
-extern int currX, currY;
-
-static int dem = 0;
-
-void resetData() {
+void resetData(int &currX, int& currY, int &turn) {
 	for(int i = 0; i < boardSize; ++i) {
 		for(int j = 0; j < boardSize; ++j) {
 			chessBoard[i][j].X = 4 * j + left + 2;
@@ -17,9 +9,12 @@ void resetData() {
 			chessBoard[i][j].mark = 0;
 		}
 	}
+	currX = 0;
+	currY = 0;
+	turn = 1;
 }
 
-void checkLegalMove() {
+void checkLegalMove(int &currX, int &currY) {
 	if(currX < 0) currX = 0;
 	else if(currX > boardSize - 1) currX = boardSize - 1;
 	if(currY < 0) currY = 0;
@@ -28,9 +23,16 @@ void checkLegalMove() {
 	goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
 }
 
-int checkWin(int turn) {
-	dem++;		
-	if(dem == boardSize*boardSize) return 2;
+int checkDraw() {
+	for(int i = 0; i < boardSize; ++i) {
+		for(int j = 0; j < boardSize; ++j) {
+			if(chessBoard[i][j].mark == 0) return 0;
+		}
+	}
+	return 1;
+}
+
+int checkWin(int currX, int currY) {
 	int h[] = {0, 0, -1, 1, -1, 1, -1, 1};
 	int k[] = {1, -1, 0, 0, -1, 1, 1, -1};
 	for(int i = 0; i < 8; ++i) {
@@ -57,14 +59,14 @@ int checkWin(int turn) {
 				j++;
 			}	
 			if(count == 4) {
-				return turn;
+				return 1;
 			}
 		}
 	}
-	return 0;	
+	return 0;
 }
 
-int checkLegalEnter(int turn) {
+int checkLegalEnter(int turn, int currX, int currY) {
     if(chessBoard[currX][currY].mark == 0) {
         chessBoard[currX][currY].mark = turn;
         return 1;

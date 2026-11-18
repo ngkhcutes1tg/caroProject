@@ -1,12 +1,6 @@
-#include "windows.h"
+#include <windows.h>
 #include <stdio.h>
 #include "view.h"
-#define boardSize 3 
-#define left 3
-#define top 1
-
-point chessBoard[boardSize][boardSize];
-extern int currX, currY, turn;
 
 void goToXY(int x, int y) {
     COORD coord = {(short) x, (short) y};
@@ -32,10 +26,7 @@ void drawBoard() {
 			}
 		}
 	}
-	currX = 0;
-	currY = 0;
-	turn = 1;
-	goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
+	goToXY(chessBoard[0][0].X, chessBoard[0][0].Y);
 }
 
 void fixConsole() {
@@ -72,62 +63,72 @@ void printChessChar(int turn) {
 
 void winPlayer(int check) {
 	goToXY(0, chessBoard[boardSize - 1][boardSize - 1].Y + 2);
-		switch(check) {
-			case 1: 
-				printf("Nguoi choi X thang\n");
-				break;
-			case -1: 
-				printf("Nguoi choi O thang\n");
-				break;
-			default:
-				setColor();
-				printf("2 nguoi choi hoa nhau\n");
-		}
+	switch(check) {
+		case 1: 
+			printf("Nguoi choi X thang\n");
+			break;
+		case -1: 
+			printf("Nguoi choi O thang\n");
+			break;
+		default:
+			printf("Hai nguoi choi hoa nhau\n");
+	}
 }
 
-void endMenu(int retryTextColor, int retryBgColor, int exitTextColor, int exitBgColor) {
-	setColor(0, 15);
+void endMenu(int pos) {
+	setColor();
 	for(int i = top + 2 * 5; i <= top + 2 * 7; ++i) {
     	goToXY(left + 4 * 4, i);
 		for(int i = 1; i <= 17; ++i) {
 			printf(" ");
 		}
 	}
-	setColor(retryTextColor, retryBgColor);
-    goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
-    printf("Choi lai!");
-	setColor(exitTextColor, exitBgColor);
-    goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
-    printf("Thoat game!");
-}
-
-void endMenuBorder(int row) {
-    for(int i = row; i <= row + 1; ++i) {
-		goToXY(left + 4 * 4, top + 2 * i);
-		for(int j = 1; j <= 17; ++j) {
-			printf(" ");	
-		}
-	}
-	goToXY(left + 4 * 4, top + 2 * row + 1);
-	printf(" ");
-	goToXY(left + 4 * 8, top + 2 * row + 1);
-	printf(" ");
-}
-
-void currPosHighlight(int mark) {
-	if(mark == 0) {
+	if(pos) {
 		setColor(0, 7);
-		printf(" ");
+		goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
+		printf("Choi lai");
+		setColor();
+		goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
+		printf("Thoat game");
 	}
 	else {
-		switch(mark) {
-			case 1:
-				setColor(4, 7);
-				printf("X");
-				break;
-			default:
-				setColor(2, 7);
-				printf("O");
-		}
+		setColor();
+		goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
+		printf("Choi lai");
+		setColor(0, 7);
+		goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
+		printf("Thoat game");
 	}
+	return;
+}
+
+void menu(int choice) {
+	setColor();
+	goToXY(35, 32);	
+	printf("Choi moi");
+	goToXY(35, 34);
+	printf("Choi tiep");
+	goToXY(35, 36);
+	printf("Cai dat");
+	goToXY(35, 38);
+	printf("Thoat");
+	setColor(0, 7);
+	switch(choice) {
+		case 1: 
+			goToXY(35, 32);	
+			printf("Choi moi");
+			break;
+		case 2:
+			goToXY(35, 34);
+			printf("Choi tiep");			
+			break;
+		case 3:
+			goToXY(35, 36);
+			printf("Cai dat");
+			break;
+		default:
+			goToXY(35, 34);
+			printf("Thoat");
+	}
+	setColor();
 }
