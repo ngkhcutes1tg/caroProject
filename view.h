@@ -7,6 +7,8 @@ typedef struct{int X, Y, mark;} point;
 extern point chessBoard[boardSize][boardSize];
 
 void goToXY(int, int);
+void showCursor();
+void hideCursor();
 void setColor(int = 7, int = 0);
 void drawBoard();
 void fixConsole();

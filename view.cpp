@@ -2,6 +2,22 @@
 #include <stdio.h>
 #include "view.h"
 
+void hideCursor() {
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	GetConsoleCursorInfo(h, &info);
+	info.bVisible = false;
+	SetConsoleCursorInfo(h, &info);
+}
+
+void showCursor() {
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	GetConsoleCursorInfo(h, &info);
+	info.bVisible = true;
+	SetConsoleCursorInfo(h, &info);
+}
+
 void goToXY(int x, int y) {
     COORD coord = {(short) x, (short) y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
@@ -59,23 +75,27 @@ void printChessChar(int turn) {
 			setColor(1, 0);
 			printf("O");
     }
+    setColor();
 }
 
 void winPlayer(int check) {
 	goToXY(0, chessBoard[boardSize - 1][boardSize - 1].Y + 2);
 	switch(check) {
 		case 1: 
+			setColor(4, 0);
 			printf("Nguoi choi X thang\n");
 			break;
 		case -1: 
+			setColor(1, 0);
 			printf("Nguoi choi O thang\n");
 			break;
 		default:
 			printf("Hai nguoi choi hoa nhau\n");
 	}
+	setColor();
 }
 
-void endMenu(int pos) {
+void endMenu(int choice) {
 	setColor();
 	for(int i = top + 2 * 5; i <= top + 2 * 7; ++i) {
     	goToXY(left + 4 * 4, i);
@@ -83,52 +103,57 @@ void endMenu(int pos) {
 			printf(" ");
 		}
 	}
-	if(pos) {
+	goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
+	printf("Choi lai");
+	goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
+	printf("Thoat game");
+	if(choice) {
 		setColor(0, 7);
 		goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
 		printf("Choi lai");
-		setColor();
-		goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
-		printf("Thoat game");
 	}
 	else {
-		setColor();
-		goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
-		printf("Choi lai");
 		setColor(0, 7);
 		goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
 		printf("Thoat game");
 	}
-	return;
+	setColor();
 }
 
 void menu(int choice) {
 	setColor();
-	goToXY(35, 32);	
+	goToXY(30, 11);	
 	printf("Choi moi");
-	goToXY(35, 34);
+	goToXY(30, 13);
 	printf("Choi tiep");
-	goToXY(35, 36);
+	goToXY(30, 15);
 	printf("Cai dat");
-	goToXY(35, 38);
+	goToXY(30, 17);
 	printf("Thoat");
 	setColor(0, 7);
 	switch(choice) {
 		case 1: 
-			goToXY(35, 32);	
+			goToXY(30, 11);	
 			printf("Choi moi");
 			break;
 		case 2:
-			goToXY(35, 34);
+			goToXY(30, 13);
 			printf("Choi tiep");			
 			break;
 		case 3:
-			goToXY(35, 36);
+			goToXY(30, 15);
 			printf("Cai dat");
 			break;
 		default:
-			goToXY(35, 34);
+			goToXY(30, 17);
 			printf("Thoat");
 	}
 	setColor();
+}
+
+void settingMenu(int choice) {
+	goToXY(30, 14);
+	printf("Am thanh");
+	goToXY(30, 16);
+	printf("Thoat");
 }

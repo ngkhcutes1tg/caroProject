@@ -29,7 +29,7 @@ void startGame(int &currX, int &currY, int &turn) {
 
 int endGame() {
     endMenu();
-    int command, command2, temp;
+    int command, command2, temp = 0;
     do {
         command = getch();
         if(command == 's' || command == 'S' || command == 'j' || command == 'J') {
@@ -43,8 +43,13 @@ int endGame() {
         else if(command == 224 || command == 0) {
             command2 = getch();
             switch(command2) {
-                case 72: endMenu(); temp = 0; break;
-                default: endMenu(0); temp = 1;
+                case 72: 
+                    endMenu(); 
+                    temp = 0; 
+                    break;
+                default: 
+                    endMenu(0); 
+                    temp = 1;
             }
         }
     }
@@ -53,9 +58,16 @@ int endGame() {
 }
 
 void gameProcessing(int &currX, int &currY, int &turn) {
+    setColor(4, 0);
+    printf(" ");
     while(1) {
         int command = getch();
         if(command != 27 && command != 13) {
+            if(chessBoard[currX][currY].mark == 0) {
+                goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
+                setColor();
+                printf(" ");
+            }
             if(command == 'w' || command == 'W' || command == 'k' || command == 'K') 
                 moveUp(currX);
             else if(command == 's' || command == 'S' || command == 'j' || command == 'J') 
@@ -81,6 +93,8 @@ void gameProcessing(int &currX, int &currY, int &turn) {
                 }
             }
             checkLegalMove(currX, currY);
+            (turn == 1) ? setColor(4, 0) : setColor(1, 0);
+            printf(" ");
         }
         else if(command == 27) {
             system("cls");
@@ -88,13 +102,24 @@ void gameProcessing(int &currX, int &currY, int &turn) {
             return;
         } 
         else if(command == 13 && checkLegalEnter(turn, currX, currY)) {
+            goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
+            setColor();
+            printf(" ");
+            goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
             printChessChar(turn);
             if(checkDraw() == 1) {
                 winPlayer(0);
+                if(endGame() == 1) {
+                    system("cls");
+                    setColor();
+                    return;
+                }
             }
             else if(checkWin(currX, currY)) {
                 winPlayer(turn);
                 if(endGame() == 1) {
+                    system("cls");
+                    setColor();
                     return;
                 }
                 else startGame(currX, currY, turn);
@@ -106,19 +131,30 @@ void gameProcessing(int &currX, int &currY, int &turn) {
 
 int controlMenu() {
     menu();
-    int choice = 1, command;
-    do {
-        command = getch();
+    int choice = 1;
+    while(1) {
+        int command = getch();
         if(command == 's' || command == 'S' || command == 'j' || command == 'J') {
             moveDown(choice);
         }
         else if(command == 'w' || command == 'W' || command == 'k' || command == 'K') {
             moveUp(choice);
         }
+        else if(command == 0 || command == 224) {
+            int command2 = getch();
+            switch(command2) {
+            case 72: 
+                moveUp(choice);
+                break;
+            case 80: 
+                moveDown(choice);
+            }
+        }
+        else if(command == 13) {
+            return choice;
+        } 
         if(choice < 1) choice = 1;
         else if(choice > 4) choice = 4;
         menu(choice);
     }
-    while(command != 13);
-    return choice;
 }

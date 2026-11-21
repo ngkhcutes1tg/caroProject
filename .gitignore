@@ -6,7 +6,6 @@
 *.dll
 *.lib
 *.a
-*.bat
 
 # Ignore precompiled headers
 *.gch
