@@ -1,7 +1,10 @@
+#include <stdio.h>
+#include <windows.h>
+#include <string.h>
 #include "model.h"
 #include "view.h"
 
-void resetData(int &currX, int& currY, int &turn) {
+int resetData(int &currX, int& currY, int &turn, int choice, char gameName[]) {
 	for(int i = 0; i < boardSize; ++i) {
 		for(int j = 0; j < boardSize; ++j) {
 			chessBoard[i][j].X = 4 * j + left + 2;
@@ -12,6 +15,23 @@ void resetData(int &currX, int& currY, int &turn) {
 	currX = 0;
 	currY = 0;
 	turn = 1;
+	if(!choice) {
+		char path[] = "savedGame/";
+		strcat(path, gameName);
+		FILE *fp = fopen(path, "rt");	
+		if(!fp) {
+			printf("Loi mo file");
+			return 0;
+		}
+		for(int i = 0; i < boardSize; ++i) {
+			for(int j = 0; j < boardSize; ++j) {
+				fscanf(fp, "%d", &chessBoard[i][j].mark);	
+			}
+		}
+		fscanf(fp, "%d", &turn);
+		fclose(fp);
+	}
+	return 1;
 }
 
 void checkLegalMove(int &currX, int &currY) {

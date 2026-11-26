@@ -1,5 +1,5 @@
-#include <windows.h>
 #include <stdio.h>
+#include <windows.h>
 #include "view.h"
 
 void hideCursor() {
@@ -42,6 +42,20 @@ void drawBoard() {
 			}
 		}
 	}
+	for(int i = 0; i < boardSize; ++i) {
+		for(int j = 0; j < boardSize; ++j) {
+			if(chessBoard[i][j].mark == 1) {
+				goToXY(chessBoard[i][j].X, chessBoard[i][j].Y);
+				setColor(4, 0);
+				printf("X");
+			}
+			else if(chessBoard[i][j].mark == -1) {
+				goToXY(chessBoard[i][j].X, chessBoard[i][j].Y);
+				setColor(1, 0);
+				printf("O");
+			}
+		}
+	}
 	goToXY(chessBoard[0][0].X, chessBoard[0][0].Y);
 }
 
@@ -66,6 +80,7 @@ void resizeConsole(int width, int height) {
 }
 
 void printChessChar(int turn) {
+	setColor();
 	switch(turn) {
 		case 1:
 			setColor(4, 0);
@@ -79,18 +94,27 @@ void printChessChar(int turn) {
 }
 
 void winPlayer(int check) {
-	goToXY(0, chessBoard[boardSize - 1][boardSize - 1].Y + 2);
+	setColor();
+	for(int i = top + 2 * 4; i <= top + 2 * 4 + 1; ++i) {
+		goToXY(left + 3 * 4, i);
+		for(int j = 1; j <= 25; ++j) {
+			printf(" ");
+		}
+	}
+	goToXY(chessBoard[4][3].X + 2, chessBoard[4][3].Y);
 	switch(check) {
 		case 1: 
 			setColor(4, 0);
-			printf("Nguoi choi X thang\n");
+			printf("Nguoi choi X thang");
 			break;
 		case -1: 
 			setColor(1, 0);
-			printf("Nguoi choi O thang\n");
+			printf("Nguoi choi O thang");
 			break;
 		default:
-			printf("Hai nguoi choi hoa nhau\n");
+			goToXY(chessBoard[4][3].X - 1, chessBoard[4][3].Y);
+			setColor();
+			printf("Hai nguoi choi hoa nhau");
 	}
 	setColor();
 }
@@ -98,15 +122,15 @@ void winPlayer(int check) {
 void endMenu(int choice) {
 	setColor();
 	for(int i = top + 2 * 5; i <= top + 2 * 7; ++i) {
-    	goToXY(left + 4 * 4, i);
-		for(int i = 1; i <= 17; ++i) {
+    	goToXY(left + 3 * 4, i);
+		for(int i = 1; i <= 25; ++i) {
 			printf(" ");
 		}
 	}
 	goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
 	printf("Choi lai");
-	goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
-	printf("Thoat game");
+	goToXY(chessBoard[6][5].X - 1, chessBoard[6][5].Y);
+	printf("Thoat");
 	if(choice) {
 		setColor(0, 7);
 		goToXY(chessBoard[5][4].X + 2, chessBoard[5][4].Y);
@@ -114,8 +138,8 @@ void endMenu(int choice) {
 	}
 	else {
 		setColor(0, 7);
-		goToXY(chessBoard[6][4].X + 1, chessBoard[6][4].Y);
-		printf("Thoat game");
+		goToXY(chessBoard[6][5].X - 1, chessBoard[6][5].Y);
+		printf("Thoat");
 	}
 	setColor();
 }
@@ -151,7 +175,40 @@ void menu(int choice) {
 	setColor();
 }
 
+void pauseMenu(int choice) {
+	setColor();
+	for(int i = top + 2 * 4; i <= top + 2 * 7; ++i) {
+		goToXY(left + 3 * 4, i);
+		for(int i = 1; i <= 25; ++i) {
+			printf(" ");
+		}
+	}
+	goToXY(chessBoard[4][4].X + 1, chessBoard[4][4].Y);
+	printf("Choi tiep");
+	goToXY(chessBoard[5][5].X, chessBoard[5][5].Y);
+	printf("Luu");
+	goToXY(chessBoard[6][5].X - 1, chessBoard[6][5].Y);
+	printf("Thoat");
+	if(choice == 1) {
+		setColor(0, 7);
+		goToXY(chessBoard[4][4].X + 1, chessBoard[4][4].Y);
+		printf("Choi tiep");
+	}
+	else if(choice == 2) {
+		setColor(0, 7);
+		goToXY(chessBoard[5][5].X, chessBoard[5][5].Y);
+		printf("Luu");
+	}
+	else if(choice == 3) {
+		setColor(0, 7);
+		goToXY(chessBoard[6][5].X - 1, chessBoard[6][5].Y);
+		printf("Thoat");
+	}
+	setColor();
+}
+
 void settingMenu(int choice) {
+	setColor();
 	goToXY(30, 14);
 	printf("Am thanh");
 	goToXY(30, 16);

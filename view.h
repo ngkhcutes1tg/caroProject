@@ -17,3 +17,5 @@ void printChessChar(int);
 void winPlayer(int);
 void endMenu(int = 1);
 void menu(int = 1);
+void pauseMenu(int = 1);
+void gameListMenu(int = 0);

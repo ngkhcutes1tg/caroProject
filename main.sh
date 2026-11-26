@@ -1,0 +1,1 @@
+WINEDEBUG=fixme-all wine game_debug.exe

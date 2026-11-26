@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 #include "control.h"
 #include "view.h"
 #include "model.h"
@@ -22,111 +23,46 @@ void moveRight(int &currY) {
     currY++;
 }
 
-void startGame(int &currX, int &currY, int &turn) {
+void newGame(int &currX, int &currY, int &turn) {
     resetData(currX, currY, turn);
     drawBoard();
+    gameProcessing(currX, currY, turn);
 }
 
-int endGame() {
+void conGame(int &currX, int&currY, int &turn, char gameName[]) {
+    resetData(currX, currY, turn, 0, gameName);
+    drawBoard();
+    gameProcessing(currX, currY, turn);
+}
+
+int retryGame() {
     endMenu();
-    int command, command2, temp = 0;
+    int command, command2, temp = 1;
     do {
         command = getch();
         if(command == 's' || command == 'S' || command == 'j' || command == 'J') {
             endMenu(0);
-            temp = 1;
+            temp = 0;
         } 
         else if(command == 'w' || command == 'W' || command == 'k' || command == 'K') {
             endMenu();
-            temp = 0;
+            temp = 1;
         }
         else if(command == 224 || command == 0) {
             command2 = getch();
             switch(command2) {
                 case 72: 
                     endMenu(); 
-                    temp = 0; 
+                    temp = 1; 
                     break;
                 default: 
                     endMenu(0); 
-                    temp = 1;
+                    temp = 0;
             }
         }
     }
     while(command != 13);
     return temp;
-}
-
-void gameProcessing(int &currX, int &currY, int &turn) {
-    setColor(4, 0);
-    printf(" ");
-    while(1) {
-        int command = getch();
-        if(command != 27 && command != 13) {
-            if(chessBoard[currX][currY].mark == 0) {
-                goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
-                setColor();
-                printf(" ");
-            }
-            if(command == 'w' || command == 'W' || command == 'k' || command == 'K') 
-                moveUp(currX);
-            else if(command == 's' || command == 'S' || command == 'j' || command == 'J') 
-                moveDown(currX);
-            else if(command == 'a' || command == 'A' || command == 'h' || command == 'H')
-                moveLeft(currY);
-            else if(command == 'd' || command == 'D' || command == 'l' || command == 'L')
-                moveRight(currY);
-            else if(command == 0 || command == 224) {
-                int command2 = getch();
-                switch(command2) {
-                    case 72:
-                        moveUp(currX);
-                        break;
-                    case 80:
-                        moveDown(currX);
-                        break;
-                    case 75:
-                        moveLeft(currY);
-                        break;
-                    default: 
-                        moveRight(currY);
-                }
-            }
-            checkLegalMove(currX, currY);
-            (turn == 1) ? setColor(4, 0) : setColor(1, 0);
-            printf(" ");
-        }
-        else if(command == 27) {
-            system("cls");
-            setColor();
-            return;
-        } 
-        else if(command == 13 && checkLegalEnter(turn, currX, currY)) {
-            goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
-            setColor();
-            printf(" ");
-            goToXY(chessBoard[currX][currY].X, chessBoard[currX][currY].Y);
-            printChessChar(turn);
-            if(checkDraw() == 1) {
-                winPlayer(0);
-                if(endGame() == 1) {
-                    system("cls");
-                    setColor();
-                    return;
-                }
-            }
-            else if(checkWin(currX, currY)) {
-                winPlayer(turn);
-                if(endGame() == 1) {
-                    system("cls");
-                    setColor();
-                    return;
-                }
-                else startGame(currX, currY, turn);
-            }
-            else turn = -turn;
-        }
-    }
 }
 
 int controlMenu() {
@@ -155,6 +91,166 @@ int controlMenu() {
         } 
         if(choice < 1) choice = 1;
         else if(choice > 4) choice = 4;
-        menu(choice);
+        else {
+            menu(choice);
+        }
+    }
+}
+
+int saveGame() {
+    pauseMenu();
+    int command, command2, temp = 1;
+    do {
+        command = getch();
+        if(command == 's' || command == 'S' || command == 'j' || command == 'J') {
+            moveDown(temp);
+        } 
+        else if(command == 'w' || command == 'W' || command == 'k' || command == 'K') {
+            moveUp(temp);
+        }
+        else if(command == 224 || command == 0) {
+            command2 = getch();
+            switch(command2) {
+                case 72: 
+                    moveUp(temp);
+                default: 
+                    moveDown(temp);
+            }
+        }
+        if(temp < 1) temp = 1;
+        else if(temp > 3) temp = 3;
+        pauseMenu(temp);
+    }
+    while(command != 13);
+    return temp;
+}
+
+void gameProcessing(int &currX, int &currY, int &turn) {
+    showCursor();
+    while(1) {
+        int command = getch();
+        if(command != 27 && command != 13) {
+            if(command == 'w' || command == 'W' || command == 'k' || command == 'K') 
+                moveUp(currX);
+            else if(command == 's' || command == 'S' || command == 'j' || command == 'J') 
+                moveDown(currX);
+            else if(command == 'a' || command == 'A' || command == 'h' || command == 'H')
+                moveLeft(currY);
+            else if(command == 'd' || command == 'D' || command == 'l' || command == 'L')
+                moveRight(currY);
+            else if(command == 'b') {
+                hideCursor();
+                switch(saveGame()) {
+                    case 1: 
+                        showCursor();
+                        drawBoard();
+                        for(int i = 0; i < boardSize; ++i) {
+                            for(int j = 0; j < boardSize; ++j) {
+                                if(chessBoard[i][j].mark == 1) {
+                                    goToXY(chessBoard[i][j].X, chessBoard[i][j].Y);
+                                    setColor(4, 0);
+                                    printf("X");
+                                }
+                                else if(chessBoard[i][j].mark == -1) {
+                                    goToXY(chessBoard[i][j].X, chessBoard[i][j].Y);
+                                    setColor(1, 0);
+                                    printf("O");                               
+                                }
+                            }
+                        }                       
+                        break;
+                    case 2: {
+                        for(int i = top + 2 * 4; i <= top + 2 * 7; ++i) {
+                            goToXY(left + 4 * 2, i);
+                            for(int i = 1; i <= 33; ++i) {
+                                printf(" ");
+                            }
+                        }   
+                        char fileName[61];
+                        goToXY(left + 4 * 2, top + 5 * 2 + 1);
+                        printf("Nhap ten: ");
+                        fgets(fileName, 51, stdin);
+                        FILE *f = fopen("gameList.txt", "a");
+                        if(f == NULL) {
+                            printf("Loi mo file");
+                            return;
+                        }
+                        fprintf(f, "%s", fileName);
+                        fileName[strcspn(fileName, "\n")] = '\0';
+                        char path[62];
+                        snprintf(path, sizeof(path), "savedGame/%s", fileName);
+                        FILE *p = fopen(path,"wt");
+                        if(p == NULL) {
+                            printf("Loi mo file");
+                            fclose(f);
+                            return;
+                        }
+                        for(int i = 0; i < boardSize; ++i) {
+                            for(int j = 0; j < boardSize; ++j) {
+                                fprintf(p, "%d ",chessBoard[i][j].mark);
+                            }
+                            fprintf(p, "\n");
+                        }
+                        fprintf(p, "%d", turn);
+                        fclose(f);
+                        fclose(p);
+                        setColor();
+                        hideCursor();
+                        return;
+                    }
+                    default:    
+                        return;
+                }
+            }
+            else if(command == 0 || command == 224) {
+                int command2 = getch();
+                switch(command2) {
+                    case 72:
+                        moveUp(currX);
+                        break;
+                    case 80:
+                        moveDown(currX);
+                        break;
+                    case 75:
+                        moveLeft(currY);
+                        break;
+                    default: 
+                        moveRight(currY);
+                }
+            }
+            checkLegalMove(currX, currY);
+        }
+        else if(command == 27) {
+            setColor();
+            return;
+        } 
+        else if(command == 13 && checkLegalEnter(turn, currX, currY)) {
+            printChessChar(turn);
+            if(checkDraw()) {
+                winPlayer(0);
+                hideCursor();
+                if(retryGame()) {
+                    newGame(currX, currY, turn);
+                    return;
+                }
+                else {
+                    setColor();
+                    return;                   
+                }
+            }
+            else if(checkWin(currX, currY)) {
+                winPlayer(turn);
+                hideCursor();
+                if(retryGame()) {
+                    newGame(currX, currY, turn);
+                    return;
+                }
+                else {
+                    setColor();
+                    return;                   
+                }
+            }
+            else turn = -turn;
+        }
     }
 }
