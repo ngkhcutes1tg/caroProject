@@ -1,13 +1,14 @@
+#include "view.h"
+#include "model.h"
+#include "control.h"
+#include "audio.h"
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
 #include <conio.h>
-#include "view.h"
-#include "model.h"
-#include "control.h"
 
 int currX, currY, turn;
-point chessBoard[boardSize][boardSize];
+point chessBoard[BOARDSIZE][BOARDSIZE];
 
 typedef struct {
     char gameName[50];
@@ -18,6 +19,8 @@ int main() {
     fixConsole(); 
     resizeConsole(70, 30);
     hideCursor();
+    audioLoad();
+    audioInit();
     while(1) {
         system("cls");
         switch(controlMenu()) {
@@ -70,16 +73,29 @@ int main() {
             conGame(currX, currY, turn, gameList[temp].gameName);
             break;
         }
-        case 3:
+        case 3: {
             system("cls");
-            printf("Cai dat\n");
-            system("pause");
+            int mv, sv, mm, sm;
+            printf("Music volume: ");
+            scanf("%d", &mv);
+            printf("Sfx volume: ");
+            scanf("%d", &sv);
+            printf("Music muted: ");
+            scanf("%d", &mm);
+            printf("Sfx muted: ");
+            scanf("%d", &sm);
+            audioSetMusicVolume(mv);
+            audioSetSfxVolume(sv);
+            audioSetMusicMuted(mm);
+            audioSetSfxMuted(sm);
             break;
+        }
         default:
             system("cls");
             showCursor();
+            audioSave();
+            audioShutdown();
             return 0;
         }
     }
-    return 0;
 }

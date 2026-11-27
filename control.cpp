@@ -6,6 +6,7 @@
 #include "control.h"
 #include "view.h"
 #include "model.h"
+#include "audio.h"
 
 void moveUp(int &currX) {
     currX--;
@@ -40,6 +41,7 @@ int retryGame() {
     int command, command2, temp = 1;
     do {
         command = getch();
+        audioPlaySfx(sfxMove);
         if(command == 's' || command == 'S' || command == 'j' || command == 'J') {
             endMenu(0);
             temp = 0;
@@ -50,6 +52,7 @@ int retryGame() {
         }
         else if(command == 224 || command == 0) {
             command2 = getch();
+            audioPlaySfx(sfxMove);
             switch(command2) {
                 case 72: 
                     endMenu(); 
@@ -70,6 +73,7 @@ int controlMenu() {
     int choice = 1;
     while(1) {
         int command = getch();
+        audioPlaySfx(sfxMove);
         if(command == 's' || command == 'S' || command == 'j' || command == 'J') {
             moveDown(choice);
         }
@@ -102,6 +106,7 @@ int saveGame() {
     int command, command2, temp = 1;
     do {
         command = getch();
+        audioPlaySfx(sfxMove);
         if(command == 's' || command == 'S' || command == 'j' || command == 'J') {
             moveDown(temp);
         } 
@@ -110,6 +115,7 @@ int saveGame() {
         }
         else if(command == 224 || command == 0) {
             command2 = getch();
+            audioPlaySfx(sfxMove);
             switch(command2) {
                 case 72: 
                     moveUp(temp);
@@ -130,8 +136,7 @@ void gameProcessing(int &currX, int &currY, int &turn) {
     while(1) {
         int command = getch();
         if(command != 27 && command != 13) {
-            if(command == 'w' || command == 'W' || command == 'k' || command == 'K') 
-                moveUp(currX);
+            if(command == 'w' || command == 'W' || command == 'k' || command == 'K') moveUp(currX);
             else if(command == 's' || command == 'S' || command == 'j' || command == 'J') 
                 moveDown(currX);
             else if(command == 'a' || command == 'A' || command == 'h' || command == 'H')
@@ -139,13 +144,14 @@ void gameProcessing(int &currX, int &currY, int &turn) {
             else if(command == 'd' || command == 'D' || command == 'l' || command == 'L')
                 moveRight(currY);
             else if(command == 'b') {
+                audioPlaySfx(sfxMove);
                 hideCursor();
                 switch(saveGame()) {
                     case 1: 
                         showCursor();
                         drawBoard();
-                        for(int i = 0; i < boardSize; ++i) {
-                            for(int j = 0; j < boardSize; ++j) {
+                        for(int i = 0; i < BOARDSIZE; ++i) {
+                            for(int j = 0; j < BOARDSIZE; ++j) {
                                 if(chessBoard[i][j].mark == 1) {
                                     goToXY(chessBoard[i][j].X, chessBoard[i][j].Y);
                                     setColor(4, 0);
@@ -160,14 +166,14 @@ void gameProcessing(int &currX, int &currY, int &turn) {
                         }                       
                         break;
                     case 2: {
-                        for(int i = top + 2 * 4; i <= top + 2 * 7; ++i) {
-                            goToXY(left + 4 * 2, i);
+                        for(int i = TOP + 2 * 4; i <= TOP + 2 * 7; ++i) {
+                            goToXY(LEFT + 4 * 2, i);
                             for(int i = 1; i <= 33; ++i) {
                                 printf(" ");
                             }
                         }   
                         char fileName[61];
-                        goToXY(left + 4 * 2, top + 5 * 2 + 1);
+                        goToXY(LEFT + 4 * 2, TOP + 5 * 2 + 1);
                         printf("Nhap ten: ");
                         fgets(fileName, 51, stdin);
                         FILE *f = fopen("gameList.txt", "a");
@@ -185,8 +191,8 @@ void gameProcessing(int &currX, int &currY, int &turn) {
                             fclose(f);
                             return;
                         }
-                        for(int i = 0; i < boardSize; ++i) {
-                            for(int j = 0; j < boardSize; ++j) {
+                        for(int i = 0; i < BOARDSIZE; ++i) {
+                            for(int j = 0; j < BOARDSIZE; ++j) {
                                 fprintf(p, "%d ",chessBoard[i][j].mark);
                             }
                             fprintf(p, "\n");
@@ -218,16 +224,20 @@ void gameProcessing(int &currX, int &currY, int &turn) {
                         moveRight(currY);
                 }
             }
+            audioPlaySfx(sfxMove);
             checkLegalMove(currX, currY);
         }
         else if(command == 27) {
+            audioPlaySfx(sfxMove);
             setColor();
             return;
         } 
         else if(command == 13 && checkLegalEnter(turn, currX, currY)) {
             printChessChar(turn);
+            audioPlaySfx(sfxPlace);
             if(checkDraw()) {
                 winPlayer(0);
+                audioPlaySfx(sfxDraw);
                 hideCursor();
                 if(retryGame()) {
                     newGame(currX, currY, turn);
@@ -240,6 +250,7 @@ void gameProcessing(int &currX, int &currY, int &turn) {
             }
             else if(checkWin(currX, currY)) {
                 winPlayer(turn);
+                audioPlaySfx(sfxWin);
                 hideCursor();
                 if(retryGame()) {
                     newGame(currX, currY, turn);

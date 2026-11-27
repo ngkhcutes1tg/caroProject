@@ -1,10 +1,10 @@
 #pragma once
-#define boardSize 12
-#define left 3
-#define top 1
+#define BOARDSIZE 12
+#define LEFT 3
+#define TOP 1
 
 typedef struct{int X, Y, mark;} point;
-extern point chessBoard[boardSize][boardSize];
+extern point chessBoard[BOARDSIZE][BOARDSIZE];
 
 void goToXY(int, int);
 void showCursor();

@@ -30,20 +30,20 @@ void setColor(int textColor, int bgColor) {
 
 void drawBoard() {
     system("cls");
-	for(int i = 0; i <= boardSize; ++i) {
-		for(int j = 0; j <= boardSize; ++j) {
-			goToXY(left + 4 * j, top + 2 * i);
+	for(int i = 0; i <= BOARDSIZE; ++i) {
+		for(int j = 0; j <= BOARDSIZE; ++j) {
+			goToXY(LEFT + 4 * j, TOP + 2 * i);
 			printf("+");
-			if(j < boardSize)	
+			if(j < BOARDSIZE)	
 				printf("---");
-			if(i < boardSize) {
-				goToXY(left + 4 * j, top + 2 * i + 1);
+			if(i < BOARDSIZE) {
+				goToXY(LEFT + 4 * j, TOP + 2 * i + 1);
 				printf("|");
 			}
 		}
 	}
-	for(int i = 0; i < boardSize; ++i) {
-		for(int j = 0; j < boardSize; ++j) {
+	for(int i = 0; i < BOARDSIZE; ++i) {
+		for(int j = 0; j < BOARDSIZE; ++j) {
 			if(chessBoard[i][j].mark == 1) {
 				goToXY(chessBoard[i][j].X, chessBoard[i][j].Y);
 				setColor(4, 0);
@@ -95,8 +95,8 @@ void printChessChar(int turn) {
 
 void winPlayer(int check) {
 	setColor();
-	for(int i = top + 2 * 4; i <= top + 2 * 4 + 1; ++i) {
-		goToXY(left + 3 * 4, i);
+	for(int i = TOP + 2 * 4; i <= TOP + 2 * 4 + 1; ++i) {
+		goToXY(TOP + 3 * 4, i);
 		for(int j = 1; j <= 25; ++j) {
 			printf(" ");
 		}
@@ -121,8 +121,8 @@ void winPlayer(int check) {
 
 void endMenu(int choice) {
 	setColor();
-	for(int i = top + 2 * 5; i <= top + 2 * 7; ++i) {
-    	goToXY(left + 3 * 4, i);
+	for(int i = TOP + 2 * 5; i <= TOP + 2 * 7; ++i) {
+    	goToXY(LEFT + 3 * 4, i);
 		for(int i = 1; i <= 25; ++i) {
 			printf(" ");
 		}
@@ -177,8 +177,8 @@ void menu(int choice) {
 
 void pauseMenu(int choice) {
 	setColor();
-	for(int i = top + 2 * 4; i <= top + 2 * 7; ++i) {
-		goToXY(left + 3 * 4, i);
+	for(int i = TOP + 2 * 4; i <= TOP + 2 * 7; ++i) {
+		goToXY(LEFT + 3 * 4, i);
 		for(int i = 1; i <= 25; ++i) {
 			printf(" ");
 		}
